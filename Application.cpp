@@ -1,5 +1,4 @@
-﻿// main.cpp
-// A self‑contained Sudoku Solver using C++, OpenGL, GLFW, GLEW, and ImGui v1.60
+﻿// A self‑contained Sudoku Solver using C++, OpenGL, GLFW, GLEW, and ImGui v1.60
 
 #include <iostream>
 #include <string>
@@ -13,10 +12,9 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
-// ——— SudokuSolver —————————————————————————————————————————————
+
 class SudokuSolver {
 public:
-    // Entry point: returns true if solved, false if invalid/unsolvable
     bool solve(std::string& board) {
         if (board.size() != 81 || !isValid(board)) return false;
         return backtrack(board);
@@ -25,7 +23,7 @@ public:
 private:
     bool backtrack(std::string& b) {
         auto pos = b.find('-');
-        if (pos == std::string::npos) return true;            // solved
+        if (pos == std::string::npos) return true;            
 
         int idx = int(pos);
         auto choices = nextChoices(b, idx);
@@ -33,13 +31,13 @@ private:
             b[idx] = d;
             if (backtrack(b)) return true;
         }
-        b[idx] = '-';                                         // backtrack
+        b[idx] = '-';                                        
         return false;
     }
 
     bool isValid(const std::string& b) {
-        return allUnitsValid(b, 0, 9, 1)  // columns
-            && allUnitsValid(b, 0, 9, 9)  // rows
+        return allUnitsValid(b, 0, 9, 1)  
+            && allUnitsValid(b, 0, 9, 9)  
             && allBoxesValid(b);
     }
 
@@ -94,7 +92,7 @@ private:
     }
 };
 
-// ——— Helpers to move between grid and string —————————————————————
+
 static std::string boardToString(char grid[9][9][2]) {
     std::string s; s.reserve(81);
     for (int r = 0; r < 9; r++)
@@ -117,7 +115,7 @@ static void clearBoard(char grid[9][9][2]) {
             grid[r][c][0] = grid[r][c][1] = '\0';
 }
 
-// ——— main() ————————————————————————————————————————————————
+
 int main() {
     // GLFW + OpenGL init
     if (!glfwInit()) return -1;
@@ -156,7 +154,7 @@ int main() {
             ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoMove);
 
-        // Draw 9×9 grid lines
+       
         auto dl = ImGui::GetWindowDrawList();
         auto p = ImGui::GetWindowPos();
         for (int i = 0; i <= 9; i++) {
@@ -165,7 +163,7 @@ int main() {
             dl->AddLine({ p.x,y }, { p.x + 540,y }, IM_COL32(0, 0, 0, 255));
         }
 
-        // InputText cells (50px wide)
+      
         for (int r = 0; r < 9; r++) {
             for (int c = 0; c < 9; c++) {
                 ImGui::SetCursorPos({ float(c * 60 + 5),
@@ -181,7 +179,7 @@ int main() {
             }
         }
 
-        // Solve & Clear
+       
         ImGui::SetCursorPos({ 10, 550 });
         if (ImGui::Button("Solve")) {
             std::string s = boardToString(grid);
@@ -195,7 +193,7 @@ int main() {
             clearBoard(grid);
         }
 
-        // Invalid popup
+     
         if (ImGui::BeginPopupModal("Invalid Board", nullptr,
             ImGuiWindowFlags_AlwaysAutoResize))
         {
@@ -205,15 +203,14 @@ int main() {
             ImGui::EndPopup();
         }
 
-        ImGui::End();              // Sudoku window
-
-        // Render
+        ImGui::End();              
+       
         ImGui::Render();
         ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
     }
 
-    // Cleanup
+
     ImGui_ImplGlfwGL3_Shutdown();
     ImGui::DestroyContext();
     glfwTerminate();
